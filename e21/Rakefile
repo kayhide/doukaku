@@ -5,29 +5,39 @@ task :default => :run
 
 @file = 'sample.txt'
 
-Game = Struct.new :moves, :count, :expected
+Game = Struct.new :moves, :count, :expected, :line
+Scene = Struct.new :moves, :slots, :index, :try
 
 def parse line
   _, q, a = line.match(/"([^"]+)".+"([^"]+)"/).to_a
   moves = q.split('/')[0].scan(/(\d)|\[(\d)\]/).map{|xs| xs.map {|x| x&.to_i}}
   count = q.split('/')[1].to_i
   expected = a
-  Game.new moves, count, expected
+  Game.new moves, count, expected, line
 end
 
-def run moves, count
-  slots = [nil] * count
-  index = 0
-  while !moves.all?(&:first)
-    raise if slots.all?
-    index = step moves, slots, index
+def run moves, count, try
+  paths = Set.new
+  scene = Scene.new moves, [nil] * count, 0, try
+  while !scene.moves.all?(&:first)
+    raise 'loop' if paths.include? scene
+    raise 'wrong' if scene.slots.all?
+    paths << scene
+    scene = step scene
+    # p scene
   end
-  slots.map(&:to_i).map(&:to_s).join
-rescue
-  (['x'] * slots.length).join
+  # p scene
+  scene.slots.map(&:to_i).map(&:to_s).join
+rescue => ex
+  # puts "retry: #{try + 1}"
+  run moves, count, try + 1
 end
 
-def step moves, slots, index
+def step scene
+  moves = scene.moves.dup
+  slots = scene.slots.dup
+  index = scene.index
+  try = scene.try
   m = moves.shift
   if slots[index]
     index += m[0] || m[1]
@@ -37,16 +47,24 @@ def step moves, slots, index
     index += m[0]
     moves.push m
   else
-    slots[index] = 1
+    if try & 1 == 0
+      slots[index] = 1
+    else
+      slots[index] = 0
+      index += m[1]
+      moves.push m
+    end
+    try = try >> 1
   end
-  index % slots.length
+  Scene.new moves, slots, index % slots.length, try
 end
 
 task :run do
   games = open(@file, &:read).lines.map{ |line| parse line }
   games.each do |g|
-    r = run g.moves, g.count
+    r = run g.moves, g.count, 0
 
+    # p g
     print (r == g.expected) ? 'OK' : '??'
     puts " #{r} #{g.expected}"
   end
