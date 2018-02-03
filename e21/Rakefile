@@ -1,0 +1,53 @@
+require 'pry'
+
+task :default => :run
+
+
+@file = 'sample.txt'
+
+Game = Struct.new :moves, :count, :expected
+
+def parse line
+  _, q, a = line.match(/"([^"]+)".+"([^"]+)"/).to_a
+  moves = q.split('/')[0].scan(/(\d)|\[(\d)\]/).map{|xs| xs.map {|x| x&.to_i}}
+  count = q.split('/')[1].to_i
+  expected = a
+  Game.new moves, count, expected
+end
+
+def run moves, count
+  slots = [nil] * count
+  index = 0
+  while !moves.all?(&:first)
+    raise if slots.all?
+    index = step moves, slots, index
+  end
+  slots.map(&:to_i).map(&:to_s).join
+rescue
+  (['x'] * slots.length).join
+end
+
+def step moves, slots, index
+  m = moves.shift
+  if slots[index]
+    index += m[0] || m[1]
+    moves.push m
+  elsif m[0]
+    slots[index] = 0
+    index += m[0]
+    moves.push m
+  else
+    slots[index] = 1
+  end
+  index % slots.length
+end
+
+task :run do
+  games = open(@file, &:read).lines.map{ |line| parse line }
+  games.each do |g|
+    r = run g.moves, g.count
+
+    print (r == g.expected) ? 'OK' : '??'
+    puts " #{r} #{g.expected}"
+  end
+end
