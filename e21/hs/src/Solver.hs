@@ -51,18 +51,17 @@ isFinished :: Scene -> Bool
 isFinished (ms, _, _) = all ((== Living) . snd) ms
 
 step :: Scene -> [Scene]
-step (m@(i, Living) : ms, slots, cur)
-  | slots !? cur == Just Unknown =
-    [(ms <> [m], slots // [(cur, Empty)], (cur + i) `mod` length slots)]
-  | otherwise =
-    [(ms <> [m], slots, (cur + i) `mod` length slots)]
-step (m@(i, Dying) : ms, slots, cur)
-  | slots !? cur == Just Unknown =
+step scene@(m : ms, slots, cur) = case (m, slots !? cur) of
+  ((i, Living), Just Unknown) ->
+    [ (ms <> [m], slots // [(cur, Empty)], roll i) ]
+  ((i, Dying), Just Unknown) ->
     [ (ms, slots // [(cur, Loaded)], cur)
-    , (ms <> [m], slots // [(cur, Empty)], (cur + i) `mod` length slots)
+    , (ms <> [m], slots // [(cur, Empty)], roll i)
     ]
-  | otherwise =
-    [(ms <> [m], slots, (cur + i) `mod` length slots)]
+  ((i, _), _) ->
+    [ (ms <> [m], slots, roll i) ]
+  where
+    roll i = (cur + i) `mod` length slots
 
 
 fillEmpty :: Scene -> Scene

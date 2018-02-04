@@ -37,12 +37,13 @@ bodyParser :: Parser [Game]
 bodyParser = many line
   where
     line = do
+      no <- "/*" *> decimal <* "*/"
       skipWhile (/= '"')
       s <- char '"' *> scene <* char '"'
       skipWhile (/= '"')
       expected <- char '"' *> slots <* char '"'
       skipWhile (/= '\n') <* endOfLine
-      pure (s, expected)
+      pure (no, s, expected)
 
     scene = do
       ms <- many1 (living <|> dying)

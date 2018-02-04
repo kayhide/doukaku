@@ -1,9 +1,8 @@
 module E21
-  ( run
-  , makeSlots
-  , module Model
+  ( module Model
   , module Solver
   , module Reader
+  , displayHistory
   ) where
 
 import Control.Monad
@@ -13,16 +12,10 @@ import Solver
 import Reader
 
 
-run :: Scene -> IO ()
-run scene = do
-  putStrLn ""
-  displayHistory . head $ solve scene
-  -- putStrLn "OK"
-
 displayHistory :: History -> IO ()
 displayHistory h@(last : _) = do
-  putStrLn "-----"
   void . traverse displayScene $ reverse h
   displayScene $ fillEmpty last
+  putStrLn "-----"
   where
     displayScene = putStrLn . formatScene

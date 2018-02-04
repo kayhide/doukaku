@@ -14,7 +14,7 @@ type Move = (Int, Livity)
 type Scene = ([Move], Vector Slot, Cur)
 type History = [Scene]
 
-type Game = (Scene, Vector Slot)
+type Game = (Int, Scene, Vector Slot)
 
 
 makeSlots :: Int -> Vector Slot
