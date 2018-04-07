@@ -35,26 +35,22 @@ toEdges r = case r of
 -- [Forward,RightUp,RightDown,Forward,RightUp,LeftUp,Forward,RightUp,RightDown,Forward,LeftDown,RightDown,Forward,RightUp,RightDown,Forward]
 go :: [Edge] -> [Rule] -> [Edge]
 go es [] = es
-go es (r : rs) = go (apply (toEdges r) =<< es) rs
+go es (r : rs) = go (apply (toEdges r)) rs
   where
-    apply es' e = (<> e) <$> es'
+    apply patterns = (<>) <$> es <*> patterns
 
 test  :: Int -> [Rule] -> Char -> Bool
 test i rules x = do
   let es = go [Forward] rules
   case (es ^? ix (i - 1), x) of
-    (Just e, _)    -> edgeMatch x e
-    (Nothing, 'x') -> True
-    _              -> False
-
-edgeMatch :: Char -> Edge -> Bool
-edgeMatch '0' Forward   = True
-edgeMatch '0' Backward  = True
-edgeMatch '+' RightUp   = True
-edgeMatch '+' LeftDown  = True
-edgeMatch '-' RightDown = True
-edgeMatch '-' LeftUp    = True
-edgeMatch _ _           = False
+    (Just Forward, '0')   -> True
+    (Just Backward, '0')  -> True
+    (Just RightUp, '+')   -> True
+    (Just LeftDown, '+')  -> True
+    (Just RightDown, '-') -> True
+    (Just LeftUp, '-')    -> True
+    (Nothing, 'x')        -> True
+    _                     -> False
 
 
 main :: IO ()
@@ -126,4 +122,3 @@ main = do
   print $ test 19312285 "bbaababbaaba" '+'
   print $ test 11485959 "baaaaababaaa" '-'
   print $ test 36831104 "babbbbbbabab" '+'
-
