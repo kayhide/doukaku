@@ -1,0 +1,84 @@
+-- This file has been generated from package.yaml by hpack version 0.20.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 6388cf085f31ccbcc2b29b70f55b45ffdb9b76843b83d99593ea33bb31885e7d
+
+name:           e23
+version:        0.1.0.0
+category:       Web
+homepage:       https://github.com/kayhide/e23#readme
+author:         kayhide
+maintainer:     kayhide@gmail.com
+copyright:      2018 kayhide
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+cabal-version:  >= 1.10
+
+extra-source-files:
+    README.md
+
+executable e23
+  main-is: Main.hs
+  hs-source-dirs:
+      src
+  default-extensions: AutoDeriveTypeable BangPatterns BinaryLiterals ConstraintKinds DataKinds DefaultSignatures DeriveAnyClass DeriveDataTypeable DeriveFoldable DeriveFunctor DeriveGeneric DeriveTraversable DoAndIfThenElse EmptyDataDecls ExistentialQuantification FlexibleContexts FlexibleInstances FunctionalDependencies GADTs GeneralizedNewtypeDeriving InstanceSigs KindSignatures LambdaCase MultiParamTypeClasses MultiWayIf NamedFieldPuns NoImplicitPrelude OverloadedLists OverloadedStrings PartialTypeSignatures PatternGuards PolyKinds RankNTypes RecordWildCards ScopedTypeVariables StandaloneDeriving TupleSections TypeApplications TypeFamilies TypeSynonymInstances ViewPatterns
+  build-depends:
+      async
+    , base >=4.7 && <5
+    , bytestring
+    , classy-prelude
+    , containers
+    , deepseq
+    , directory
+    , exceptions
+    , filepath
+    , lens
+    , mtl
+    , primitive
+    , stm
+    , text
+    , time
+    , transformers
+    , typed-process
+    , unliftio
+    , unliftio-core
+    , unordered-containers
+    , vector
+  other-modules:
+      Paths_e23
+  default-language: Haskell2010
+
+test-suite doctest
+  type: exitcode-stdio-1.0
+  main-is: doctest.hs
+  hs-source-dirs:
+      test
+  default-extensions: AutoDeriveTypeable BangPatterns BinaryLiterals ConstraintKinds DataKinds DefaultSignatures DeriveAnyClass DeriveDataTypeable DeriveFoldable DeriveFunctor DeriveGeneric DeriveTraversable DoAndIfThenElse EmptyDataDecls ExistentialQuantification FlexibleContexts FlexibleInstances FunctionalDependencies GADTs GeneralizedNewtypeDeriving InstanceSigs KindSignatures LambdaCase MultiParamTypeClasses MultiWayIf NamedFieldPuns NoImplicitPrelude OverloadedLists OverloadedStrings PartialTypeSignatures PatternGuards PolyKinds RankNTypes RecordWildCards ScopedTypeVariables StandaloneDeriving TupleSections TypeApplications TypeFamilies TypeSynonymInstances ViewPatterns
+  build-depends:
+      async
+    , base >=4.7 && <5
+    , bytestring
+    , classy-prelude
+    , containers
+    , deepseq
+    , directory
+    , doctest
+    , exceptions
+    , filepath
+    , lens
+    , mtl
+    , primitive
+    , stm
+    , text
+    , time
+    , transformers
+    , typed-process
+    , unliftio
+    , unliftio-core
+    , unordered-containers
+    , vector
+  other-modules:
+      Paths_e23
+  default-language: Haskell2010

@@ -1,0 +1,91 @@
+name:                e23
+version:             0.1.0.0
+#synopsis:
+#description:
+homepage:            https://github.com/kayhide/e23#readme
+license:             BSD3
+author:              kayhide
+maintainer:          kayhide@gmail.com
+copyright:           2018 kayhide
+category:            Web
+extra-source-files:
+- README.md
+
+dependencies:
+- base >= 4.7 && < 5
+- bytestring
+- text
+- primitive
+- vector
+- transformers
+- mtl
+- stm
+- containers
+- unordered-containers
+- async
+- deepseq
+- directory
+- filepath
+- unliftio-core
+- unliftio
+- time
+- typed-process
+- exceptions
+- classy-prelude
+- lens
+
+default-extensions:
+- AutoDeriveTypeable
+- BangPatterns
+- BinaryLiterals
+- ConstraintKinds
+- DataKinds
+- DefaultSignatures
+- DeriveAnyClass
+- DeriveDataTypeable
+- DeriveFoldable
+- DeriveFunctor
+- DeriveGeneric
+- DeriveTraversable
+- DoAndIfThenElse
+- EmptyDataDecls
+- ExistentialQuantification
+- FlexibleContexts
+- FlexibleInstances
+- FunctionalDependencies
+- GADTs
+- GeneralizedNewtypeDeriving
+- InstanceSigs
+- KindSignatures
+- LambdaCase
+- MultiParamTypeClasses
+- MultiWayIf
+- NamedFieldPuns
+- NoImplicitPrelude
+- OverloadedLists
+- OverloadedStrings
+- PartialTypeSignatures
+- PatternGuards
+- PolyKinds
+- RankNTypes
+- RecordWildCards
+- ScopedTypeVariables
+- StandaloneDeriving
+- TupleSections
+- TypeApplications
+- TypeFamilies
+- TypeSynonymInstances
+- ViewPatterns
+
+
+executables:
+  e23:
+    source-dirs:      src
+    main:             Main.hs
+
+tests:
+  doctest:
+    source-dirs:      test
+    main:             doctest.hs
+    dependencies:
+    - doctest
