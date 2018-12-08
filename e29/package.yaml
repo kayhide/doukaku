@@ -32,6 +32,8 @@ dependencies:
   - unliftio-core
   - unordered-containers
   - vector
+  - aeson
+  - megaparsec
 
 default-extensions:
   - AutoDeriveTypeable
