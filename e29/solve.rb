@@ -54,11 +54,20 @@ def modify
   StateMonad.new { |s| [nil, yield(s)] }
 end
 
+def alt *ms
+  nexts = ->(ms) {
+    ms.empty? ? pure(nil) : ms.first.bind { |x|
+      x ? pure(x) : nexts[ms.drop(1)]
+    }
+  }
+  nexts[ms]
+end
+
 def chars
   get.bind { |s|
     str = s.sub(/\A([a-zA-Z0-9]+)/, "")
     x = $1
-    x ? put(str).then(pure x) : pure(nil)
+    x ? put(str).then(pure x.to_s) : pure(nil)
   }
 end
 
@@ -71,22 +80,16 @@ def double_slash
 end
 
 def plain
-  many(
-    chars.bind { |x|
-      x ? pure(x) : double_slash
-    }
-  ).bind { |xs| xs.join.empty? ? pure(nil) : pure(xs.join) }
+  many(alt(chars, double_slash))
+    .bind { |xs| xs.join.empty? ? pure(nil) : pure(xs.join) }
 end
 
 def quated q
   q_ = ['\'', '\"'] - [q]
   get.bind { |s|
-    xs = []
-    str = s.sub(/\A#{q}([#{q_.join}\/a-zA-Z0-9]*?)#{q}/) do |m|
-      xs << $1
-      ""
-    end
-    xs.empty? ? pure(nil) : put(str).then(pure xs.join)
+    str = s.sub(/\A#{q}([#{q_.join}\/a-zA-Z0-9]*)#{q}/, "")
+    x = $1
+    x ? put(str).then(pure x.to_s) : pure(nil)
   }
 end
 
@@ -97,20 +100,14 @@ def slash
 end
 
 def entry
-  many(
-    plain.bind { |x|
-      x ? pure(x) : quated('\'').bind { |x|
-        x ? pure(x) : quated('\"')
-      }
-    }
-  ).bind { |xs| xs.join.empty? ? pure(nil) : pure(xs.join) }
+  many(alt(plain, quated('\''), quated('\"')))
+    .bind { |xs| xs.join.empty? ? pure(nil) : pure(xs.join) }
 end
 
 def path
   entry.bind { |x|
-    many(
-      slash.then(entry)
-    ).bind { |xs| pure [x, *xs] }
+    many(slash.then(entry))
+      .bind { |xs| pure [x, *xs] }
   }
 end
 
@@ -118,11 +115,7 @@ def many m
   nexts = ->(xs) {
     get.bind { |s|
       m.bind { |x|
-        if x
-          nexts[[*xs, x]]
-        else
-          put(s).then(pure(xs))
-        end
+        x ? nexts[[*xs, x]] : put(s).then(pure(xs))
       }
     }
   }
