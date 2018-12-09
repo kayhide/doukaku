@@ -1,3 +1,4 @@
+{-# LANGUAGE DerivingStrategies #-}
 module Main where
 
 import           ClassyPrelude        hiding (many, some, try)
@@ -88,7 +89,7 @@ data Event =
   , test_data :: [Problem]
   }
   deriving (Show, Eq, Generic)
-instance FromJSON Event
+  deriving (FromJSON)
 
 data Problem =
   Problem
@@ -97,7 +98,7 @@ data Problem =
   , expected :: Text
   }
   deriving (Show, Eq, Generic)
-instance FromJSON Problem
+  deriving (FromJSON)
 
 
 -- | Load problem items.
